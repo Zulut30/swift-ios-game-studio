@@ -1,0 +1,50 @@
+name: CI
+
+# Quality gates for the swift-ios-game-studio package.
+# Runs on every push to main and on pull requests.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Validate skill, agents & example
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select a Swift 6 toolchain (Xcode 16+)
+        run: |
+          latest="$(ls -d /Applications/Xcode_16*.app 2>/dev/null | sort -V | tail -1 || true)"
+          if [ -n "$latest" ]; then sudo xcode-select -s "$latest"; fi
+          swift --version
+
+      - name: Structural quality gate (frontmatter, sync, JSON, plist, globs)
+        run: .agents/skills/swift-ios-game-studio/scripts/validate-skill.sh
+
+      - name: Skill copies in sync with canonical
+        run: .agents/skills/swift-ios-game-studio/scripts/sync-skill.sh --check
+
+      - name: Subagent copies in sync with canonical
+        run: .agents/agents/sync-agents.py --check
+
+      - name: Build the example game core
+        working-directory: examples/MemoryMatch
+        run: swift build
+
+      - name: Test the example game core
+        working-directory: examples/MemoryMatch
+        run: swift test
+
+      - name: Scaffold smoke test (non-destructive)
+        run: |
+          .agents/skills/swift-ios-game-studio/scripts/scaffold-game-module.py \
+            --name CiSmoke --type memory-cards --dest "$RUNNER_TEMP/scaffold-test"
+          test -f "$RUNNER_TEMP/scaffold-test/CiSmoke/Models/CiSmokeModel.swift"

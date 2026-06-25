@@ -1,5 +1,7 @@
 # swift-ios-game-studio
 
+[![CI](https://github.com/Zulut30/swift-ios-game-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/Zulut30/swift-ios-game-studio/actions/workflows/ci.yml)
+
 A portable **Agent Skill** that lets an AI coding agent (Codex, Claude Code, Cursor) build
 simple, polished 2D games for iPhone and iPad in Swift — and write **excellent Swift** doing it.
 
@@ -55,6 +57,10 @@ Regenerate tool copies with `.agents/agents/sync-agents.py`. See
 - **Verify the example builds & tests:**
   ```bash
   cd examples/MemoryMatch && swift build && swift test
+  ```
+- **Run the full quality gate** (also enforced in CI on every push/PR):
+  ```bash
+  .agents/skills/swift-ios-game-studio/scripts/validate-skill.sh   # frontmatter, sync, JSON, plist, globs
   ```
 - **Scaffold a new game module:**
   ```bash

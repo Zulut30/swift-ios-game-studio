@@ -1,9 +1,6 @@
 ---
 description: Testing and build rules for Swift games — unit-test the pure model, use Swift Testing/XCTest, honest xcodebuild reporting.
-globs:
-  - "**/*Tests*.swift"
-  - "**/*Test*.swift"
-  - "**/Tests/**/*.swift"
+globs: **/*Tests*.swift, **/*Test*.swift, **/Tests/**/*.swift
 alwaysApply: false
 ---
 

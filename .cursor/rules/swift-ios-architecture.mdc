@@ -1,7 +1,6 @@
 ---
 description: Architecture rules for Swift game source — separate logic from rendering, state machine, modular layout.
-globs:
-  - "**/*.swift"
+globs: **/*.swift
 alwaysApply: false
 ---
 

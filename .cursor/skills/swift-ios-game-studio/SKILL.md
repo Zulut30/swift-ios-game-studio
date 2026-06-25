@@ -125,6 +125,9 @@ If the user is vague, build a small polished MVP and document every assumption:
   privacy-first apps (adjust honestly to what the app actually does).
 
 ## Scripts
-- `scripts/sync-skill.sh` — mirror this canonical skill into `.claude/` and `.cursor/`.
+- `scripts/sync-skill.sh` — mirror this canonical skill into `.claude/` and `.cursor/`
+  (`--check` fails on drift for CI).
 - `scripts/verify-ios-project.sh` — find project/workspace, list schemes, safe build/test.
 - `scripts/scaffold-game-module.py` — create a non-destructive module skeleton for a genre.
+- `scripts/validate-skill.sh` — structural quality gate (frontmatter, name==folder, sync,
+  JSON/plist validity, script syntax, Cursor `globs` format). Run before committing skill changes.
