@@ -1,0 +1,52 @@
+---
+description: Architecture rules for Swift game source — separate logic from rendering, state machine, modular layout.
+globs:
+  - "**/*.swift"
+alwaysApply: false
+---
+
+# Swift game architecture rules
+
+Applies to Swift source files. Keep games testable, adaptable, and small.
+
+## Separate logic from rendering
+- All game **rules and mutable state** live in pure Swift types with **no** `import SwiftUI`
+  or `import SpriteKit`. This keeps the model unit-testable without a simulator.
+- SwiftUI views and `SKScene`s are **thin**: they bind to the model, render it, and translate
+  input into model intents. No game rules in the view/scene.
+
+## State machine
+- Use an explicit `enum GameState { case menu, playing, paused, won, lost }`.
+- A single controller owns transitions; views derive from it (don't fork state).
+- Modern targets: `@Observable` (Observation). Older: `ObservableObject` + `@Published`.
+
+## Modular layout
+```
+GameName/
+├─ App/        Models/        Systems/
+├─ Scenes/     Views/         Resources/   Tests/
+```
+- Many small, single-purpose files over a few large ones.
+- Systems are focused (input, score, spawn, collision, audio, save) and independently testable.
+
+## Game loop & time
+- Advance by clamped `dt` (e.g. `dt = min(dt, 1/30)`); never tie movement to "per frame".
+- SpriteKit: drive the model from `update(_:)`, then mirror model → nodes.
+- SwiftUI: prefer state + `withAnimation`; use `TimelineView(.animation)`/`Canvas` only when you
+  truly need per-frame rendering.
+
+## Input
+- Translate gestures/touches into model **intents**; the model decides legality and scoring.
+- Keep hit-testing in the view/scene; keep the verdict in the model.
+
+## Persistence
+- Small `Codable` save model in `UserDefaults` or a JSON file; include `schemaVersion`; tolerate
+  missing keys. Save only progress/settings — never personal data.
+
+## Assets & dependencies
+- No copyrighted assets — placeholder vector shapes / SF Symbols, or user-owned assets only.
+- Levels are JSON **data**, not code (see the skill's `assets/level-schema-template.json`).
+- Apple frameworks preferred; justify any third-party package.
+
+Reference: `.agents/skills/swift-ios-game-studio/references/ios-game-architecture.md` and
+`swiftui-spritekit-patterns.md`.

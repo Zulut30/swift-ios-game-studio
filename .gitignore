@@ -1,0 +1,53 @@
+# ---- macOS ----
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# ---- Xcode ----
+*.xcuserstate
+*.xcuserdatad/
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+DerivedData/
+build/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# ---- Swift Package Manager ----
+.build/
+.swiftpm/
+Package.resolved
+.netrc
+
+# ---- Python (skill scripts) ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# ---- Editors / tooling ----
+*.swp
+*~
+.idea/
+*.log
+
+# ---- CocoaPods / Carthage (if ever added) ----
+Pods/
+Carthage/Build/
+
+# NOTE: do NOT ignore the tool-specific skill copies (.claude/, .cursor/) — they are committed
+# mirrors produced by scripts/sync-skill.sh. Keep them in version control.

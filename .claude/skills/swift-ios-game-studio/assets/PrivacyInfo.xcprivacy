@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  PrivacyInfo.xcprivacy — privacy manifest template for a privacy-first / kids game.
+
+  This template declares: NO tracking, NO tracking domains, and NO collected data types.
+  Add it to your app target (and any SDK targets) in Xcode.
+
+  IMPORTANT — be honest:
+   * Only keep this "collects nothing" shape if the app truly collects nothing.
+   * If you use any "required reason" API (e.g. UserDefaults, file timestamps, disk space,
+     system boot time, active keyboards), you MUST add the matching entry to
+     NSPrivacyAccessedAPITypes with an allowed reason code. Two common ones are shown commented out.
+   * This file does not guarantee App Store approval. Verify against the current
+     App Store Review Guidelines and Apple's privacy-manifest documentation.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- The app does NOT track users (no linking to third-party data for ads/measurement). -->
+    <key>NSPrivacyTracking</key>
+    <false/>
+
+    <!-- No domains that engage in tracking. -->
+    <key>NSPrivacyTrackingDomains</key>
+    <array/>
+
+    <!-- No data is collected from this app. -->
+    <key>NSPrivacyCollectedDataTypes</key>
+    <array/>
+
+    <!-- Declare required-reason APIs you actually use. Empty = none.
+         Uncomment and adapt if you use UserDefaults or file-timestamp APIs, etc. -->
+    <key>NSPrivacyAccessedAPITypes</key>
+    <array>
+        <!--
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>CA92.1</string>
+            </array>
+        </dict>
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>C617.1</string>
+            </array>
+        </dict>
+        -->
+    </array>
+</dict>
+</plist>

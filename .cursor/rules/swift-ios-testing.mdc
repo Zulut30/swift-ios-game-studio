@@ -1,0 +1,56 @@
+---
+description: Testing and build rules for Swift games — unit-test the pure model, use Swift Testing/XCTest, honest xcodebuild reporting.
+globs:
+  - "**/*Tests*.swift"
+  - "**/*Test*.swift"
+  - "**/Tests/**/*.swift"
+alwaysApply: false
+---
+
+# Swift game testing & build rules
+
+Applies to test files and any build/test work.
+
+## What to test (priority order)
+1. **Pure model rules** — legal moves, scoring, win/lose, state transitions, level decoding.
+   No simulator needed; highest value.
+2. **Systems** — spawn logic, collision verdicts, save/load round-trips, difficulty ramps.
+3. **Determinism** — seeded RNG produces reproducible shuffles/spawns.
+4. Light view logic only; avoid brittle pixel/snapshot tests for an MVP.
+
+## Frameworks
+- Prefer **Swift Testing**: `import Testing`, `@Test`, `#expect(...)`, `#require(...)`.
+- **XCTest** is fine: `final class XTests: XCTestCase { func testX() { XCTAssertEqual(...) } }`.
+- Make the model the single source of truth; inject a seed for deterministic tests.
+
+```swift
+import Testing
+@testable import GameName
+
+@Test func winWhenAllMatched() {
+    var board = Board(seed: 1)
+    board.matchAllForTesting()
+    #expect(board.isWin)
+}
+```
+
+## Build & test commands
+- Discover first: `.agents/skills/swift-ios-game-studio/scripts/verify-ios-project.sh`.
+- Build/test only with a known scheme + destination:
+  ```bash
+  xcodebuild -list -project GameName.xcodeproj     # or -workspace GameName.xcworkspace
+  xcodebuild build -scheme GameName -destination 'platform=iOS Simulator,name=iPhone 15'
+  xcodebuild test  -scheme GameName -destination 'platform=iOS Simulator,name=iPhone 15'
+  ```
+- Swift packages: `swift build` / `swift test`.
+
+## Honesty rule
+Only report a build or tests as passing if you actually ran them and saw the output.
+If you cannot build here (no project / no toolchain), say so explicitly and provide the commands.
+
+## Before "done"
+- Manual pass: play the loop start→finish; win and lose; rotate; iPhone + iPad; background/
+  foreground; VoiceOver + Reduce Motion; restart/persistence.
+- No debug logging, placeholder copy, or TODOs left in the play path.
+
+Reference: `.agents/skills/swift-ios-game-studio/references/testing-and-release.md`.

@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+#
+# sync-skill.sh — mirror the canonical swift-ios-game-studio skill into tool-specific
+# locations (.claude/skills and .cursor/skills). The canonical source of truth is
+# .agents/skills/swift-ios-game-studio. Run this after editing the canonical skill.
+#
+# Usage:
+#   scripts/sync-skill.sh            # copy canonical into .claude and .cursor
+#   DRY_RUN=1 scripts/sync-skill.sh  # show what would happen, change nothing
+#   scripts/sync-skill.sh --check    # CI: exit non-zero if any copy has drifted (no changes)
+#
+set -euo pipefail
+
+SKILL_NAME="swift-ios-game-studio"
+
+# Resolve repo root from this script's directory
+# (.agents/skills/<skill>/scripts/sync-skill.sh -> repo root is 4 levels up).
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CANONICAL_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"          # .agents/skills/<skill>
+REPO_ROOT="$(cd "${CANONICAL_DIR}/../../.." && pwd)"     # repo root
+
+if [[ ! -f "${CANONICAL_DIR}/SKILL.md" ]]; then
+  echo "error: canonical SKILL.md not found at ${CANONICAL_DIR}/SKILL.md" >&2
+  exit 1
+fi
+
+TARGETS=(
+  "${REPO_ROOT}/.claude/skills/${SKILL_NAME}"
+  "${REPO_ROOT}/.cursor/skills/${SKILL_NAME}"
+)
+
+MODE="sync"
+[[ "${1:-}" == "--check" ]] && MODE="check"
+DRY_RUN="${DRY_RUN:-0}"
+
+run() {
+  if [[ "${DRY_RUN}" == "1" ]]; then
+    echo "[dry-run] $*"
+  else
+    eval "$@"
+  fi
+}
+
+# --check: compare each target against canonical without modifying anything.
+if [[ "${MODE}" == "check" ]]; then
+  drift=0
+  for target in "${TARGETS[@]}"; do
+    if [[ ! -d "${target}" ]]; then
+      echo "DRIFT: missing copy ${target}"
+      drift=1
+      continue
+    fi
+    if command -v rsync >/dev/null 2>&1; then
+      # Dry-run rsync: any itemized output means the copy differs from canonical.
+      out="$(rsync -a --delete --itemize-changes --dry-run "${CANONICAL_DIR}/" "${target}/" \
+             --exclude '__pycache__' --exclude '*.pyc')"
+    else
+      out="$(diff -r "${CANONICAL_DIR}" "${target}" 2>&1 | grep -v '__pycache__' || true)"
+    fi
+    if [[ -n "${out}" ]]; then
+      echo "DRIFT: ${target} differs from canonical:"
+      echo "${out}" | sed 's/^/    /'
+      drift=1
+    else
+      echo "OK:    ${target} is in sync"
+    fi
+  done
+  if [[ "${drift}" -ne 0 ]]; then
+    echo "Copies have drifted. Run: scripts/sync-skill.sh" >&2
+    exit 1
+  fi
+  echo "All skill copies are in sync with canonical."
+  exit 0
+fi
+
+# Default: sync canonical -> targets.
+echo "Canonical skill: ${CANONICAL_DIR}"
+for target in "${TARGETS[@]}"; do
+  echo "Syncing -> ${target}"
+  run "mkdir -p \"${target}\""
+  # Mirror canonical into target. --delete keeps the copy a true mirror; skip bytecode caches.
+  if command -v rsync >/dev/null 2>&1; then
+    run "rsync -a --delete --exclude '__pycache__' --exclude '*.pyc' \"${CANONICAL_DIR}/\" \"${target}/\""
+  else
+    run "rm -rf \"${target:?}\"/*"
+    run "cp -R \"${CANONICAL_DIR}/.\" \"${target}/\""
+    run "find \"${target}\" -name '__pycache__' -type d -prune -exec rm -rf {} +"
+  fi
+done
+
+echo "Done. ${SKILL_NAME} synced to .claude/skills and .cursor/skills."

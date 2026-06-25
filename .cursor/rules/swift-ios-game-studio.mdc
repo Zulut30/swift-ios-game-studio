@@ -1,0 +1,44 @@
+---
+description: Swift iOS/iPadOS 2D game development studio — always-on guidance pointing at the swift-ios-game-studio skill.
+alwaysApply: true
+---
+
+# Swift iOS Game Studio (broad rule)
+
+For any Swift / iOS / iPadOS **game** work in this repo, use the **swift-ios-game-studio**
+skill. Canonical: `.agents/skills/swift-ios-game-studio/SKILL.md`
+(Cursor copy: `.cursor/skills/swift-ios-game-studio/SKILL.md`).
+
+It builds simple 2D games: coloring, puzzles, platformers, drag-and-drop, memory/matching,
+lite runners, tap-reaction, educational mini-games.
+
+## Always follow this workflow
+1. Understand the request (genre, age, core verb, fail model, platforms/orientation).
+2. Produce a one-page Mini-GDD (`assets/gdd-template.md`).
+3. Choose mode: **SwiftUI-only** (static/turn-based), **SpriteKit** (motion/physics),
+   or **hybrid** (`SpriteView` in a SwiftUI shell).
+4. Define architecture (pure model + state machine + thin views).
+5. Implement a small, polished MVP from the `assets/` templates.
+6. Add unit tests for the model.
+7. Build/test with `xcodebuild` when a project exists (see scripts).
+8. Review child safety, privacy, accessibility, performance (`assets/review-checklist.md`).
+9. Hand off: changed files, commands run + output, assumptions, risks.
+
+## Non-negotiables
+- No copyrighted assets — placeholder vector shapes / SF Symbols or user-owned assets only.
+- Game rules in pure Swift (no SwiftUI/SpriteKit imports), unit-tested.
+- Minimal dependencies (Apple frameworks preferred).
+- Accessibility labels/values/traits on every interactive control; Dynamic Type; Reduce Motion.
+- Kids apps: no tracking/analytics/ads/external-links/accounts; offline-first; no personal data;
+  minimal permissions; parental gate for sensitive actions.
+- Never claim guaranteed App Store / COPPA / Kids approval — give a checklist and risks.
+
+When in doubt, apply documented defaults (ages 4–8, no-fail, both orientations, SwiftUI-only
+unless physics is required) and write the assumptions into the Mini-GDD and handoff.
+
+## Specialist roles (subagents)
+For larger work, adopt one of the specialist roles in `.cursor/rules/agents/` (or paste it as a
+Custom Mode system prompt). Pipeline: `game-coordinator` (decompose) → `game-designer` →
+`engine-architect` → `gameplay-programmer` (+ `narrative-writer`, `balance-economist`) →
+`qa-tester` → `code-reviewer`. Each role enforces the same contract above. Canonical specs and
+details: `.agents/agents/README.md`.
