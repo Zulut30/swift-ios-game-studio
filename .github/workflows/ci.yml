@@ -26,14 +26,10 @@ jobs:
           if [ -n "$latest" ]; then sudo xcode-select -s "$latest"; fi
           swift --version
 
+      # The validator also runs both sync --checks (skill + agents), JSON/plist validity,
+      # frontmatter/name==folder, script syntax, and the Cursor globs format check.
       - name: Structural quality gate (frontmatter, sync, JSON, plist, globs)
         run: .agents/skills/swift-ios-game-studio/scripts/validate-skill.sh
-
-      - name: Skill copies in sync with canonical
-        run: .agents/skills/swift-ios-game-studio/scripts/sync-skill.sh --check
-
-      - name: Subagent copies in sync with canonical
-        run: .agents/agents/sync-agents.py --check
 
       - name: Build the example game core
         working-directory: examples/MemoryMatch

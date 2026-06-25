@@ -41,7 +41,9 @@ run() {
   fi
 }
 
-# --check: compare each target against canonical without modifying anything.
+# --check: compare each target against canonical by CONTENT only (ignore file/dir timestamps,
+# which differ harmlessly on a fresh git checkout). `diff -rq` reports differing files and any
+# files present in only one tree; __pycache__/*.pyc are excluded.
 if [[ "${MODE}" == "check" ]]; then
   drift=0
   for target in "${TARGETS[@]}"; do
@@ -50,13 +52,7 @@ if [[ "${MODE}" == "check" ]]; then
       drift=1
       continue
     fi
-    if command -v rsync >/dev/null 2>&1; then
-      # Dry-run rsync: any itemized output means the copy differs from canonical.
-      out="$(rsync -a --delete --itemize-changes --dry-run "${CANONICAL_DIR}/" "${target}/" \
-             --exclude '__pycache__' --exclude '*.pyc')"
-    else
-      out="$(diff -r "${CANONICAL_DIR}" "${target}" 2>&1 | grep -v '__pycache__' || true)"
-    fi
+    out="$(diff -rq -x '__pycache__' -x '*.pyc' "${CANONICAL_DIR}" "${target}" 2>&1 || true)"
     if [[ -n "${out}" ]]; then
       echo "DRIFT: ${target} differs from canonical:"
       echo "${out}" | sed 's/^/    /'
