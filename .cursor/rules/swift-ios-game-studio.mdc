@@ -37,8 +37,10 @@ When in doubt, apply documented defaults (ages 4–8, no-fail, both orientations
 unless physics is required) and write the assumptions into the Mini-GDD and handoff.
 
 ## Specialist roles (subagents)
-For larger work, adopt one of the specialist roles in `.cursor/rules/agents/` (or paste it as a
-Custom Mode system prompt). Pipeline: `game-coordinator` (decompose) → `game-designer` →
-`engine-architect` → `gameplay-programmer` (+ `narrative-writer`, `balance-economist`) →
-`qa-tester` → `code-reviewer`. Each role enforces the same contract above. Canonical specs and
-details: `.agents/agents/README.md`.
+For larger work, adopt one of the 12 specialist roles in `.cursor/rules/agents/` (or paste it as a
+Custom Mode system prompt).
+- Build: `game-coordinator` (decompose) → `game-designer` → `engine-architect` →
+  `gameplay-programmer` (+ `narrative-writer`, `balance-economist`) → `qa-tester`.
+- Review & audit (read-only): `code-reviewer` (diff/PR) + pre-release gate `code-auditor`,
+  `security-auditor`, `performance-auditor`, `legal-compliance`.
+Each role enforces the same contract above. Canonical specs: `.agents/agents/README.md`.

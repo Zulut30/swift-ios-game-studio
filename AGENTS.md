@@ -15,11 +15,12 @@ tests → build/test → review (child safety, privacy, a11y, performance) → h
 Deep-dive references live in `.agents/skills/swift-ios-game-studio/references/`,
 copy-and-adapt templates in `assets/`, and helper scripts in `scripts/`.
 
-## Subagents (specialist roles)
+## Subagents (12 specialist roles)
 For larger game work, play the specialist roles defined in `.agents/agents/` (canonical specs).
 When asked to "act as the <role> agent", read that file and adopt its responsibilities and output
-format. The pipeline:
+format.
 
+**Build roles**
 1. `game-coordinator` — decompose the task, sequence subtasks, decide who's next (first).
 2. `game-designer` — mechanics, core loop, progression, economy concept, Mini-GDD.
 3. `engine-architect` — mode (SwiftUI/SpriteKit/hybrid), architecture, perf budget, seams.
@@ -27,7 +28,14 @@ format. The pipeline:
 5. `narrative-writer` — quests, copy, lore, tutorial flow, localized strings (parallel).
 6. `balance-economist` — difficulty/progression curves, economy, win-rate/tempo (parallel).
 7. `qa-tester` — test cases, unit tests, edge cases, accessibility, runs build/tests.
-8. `code-reviewer` — bugs, style, architecture violations vs the skill + Swift quality bar (last).
+
+**Review & audit roles** (read-only — report findings, route fixes back to build roles)
+8. `code-reviewer` — reviews a single diff/PR: bugs, style, architecture vs the skill + Swift bar.
+9. `code-auditor` — sweeps the whole codebase: systemic correctness, consistency, dead code, coverage.
+10. `security-auditor` — data leaks, insecure storage/network, secrets, permissions, kids-privacy.
+11. `performance-auditor` — frame budget, allocations, draw calls, memory, battery; profiling plan.
+12. `legal-compliance` — App Store guidelines, COPPA/GDPR-K, Kids Category, licensing, IP
+    (checklists & risks, not legal advice).
 
 Every role enforces the same contract: no copyrighted assets, testable UI-free logic core,
 accessibility, kids safety/privacy, the Swift quality bar, and no compliance guarantees.
