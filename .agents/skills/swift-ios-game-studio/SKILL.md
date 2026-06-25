@@ -100,6 +100,10 @@ If the user is vague, build a small polished MVP and document every assumption:
 - `references/accessibility-child-safety.md` — a11y APIs + kids-app safety/privacy rules.
 - `references/testing-and-release.md` — unit tests, build/test commands, release checklist.
 - `references/performance-checklist.md` — frame budget, node/draw counts, memory, battery.
+- `references/gameplaykit-gamekit.md` — optional: GKStateMachine, deterministic GKRandomSource,
+  ECS, agents/pathfinding; GameKit (Game Center) with kids-safety caveats.
+- `references/haptics-and-guided-access.md` — tactile feedback (UIFeedbackGenerator / Core
+  Haptics) and Guided Access (device lock-in for kids).
 
 ### Swift mastery (write excellent Swift) — `references/swift/`
 - `references/swift/README.md` — index + the 10-point Swift quality bar (start here).
@@ -123,6 +127,8 @@ If the user is vague, build a small polished MVP and document every assumption:
   testable shuffles/spawns.
 - `assets/PrivacyInfo.xcprivacy` — "Data Not Collected" privacy manifest template for kids/
   privacy-first apps (adjust honestly to what the app actually does).
+- `assets/example-level.json` — a valid sample level conforming to `level-schema-template.json`;
+  use as a starting point and a validation fixture.
 
 ## Scripts
 - `scripts/sync-skill.sh` — mirror this canonical skill into `.claude/` and `.cursor/`
@@ -131,3 +137,5 @@ If the user is vague, build a small polished MVP and document every assumption:
 - `scripts/scaffold-game-module.py` — create a non-destructive module skeleton for a genre.
 - `scripts/validate-skill.sh` — structural quality gate (frontmatter, name==folder, sync,
   JSON/plist validity, script syntax, Cursor `globs` format). Run before committing skill changes.
+- `scripts/validate-levels.py` — validate level JSON files against `level-schema-template.json`
+  (uses `jsonschema` if installed, else a dependency-free built-in validator).

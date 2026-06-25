@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "id": "level_001",
+  "name": "First Steps",
+  "template": "simple-platformer",
+  "difficulty": 1,
+  "seed": 42,
+  "size": { "width": 1024, "height": 768 },
+  "palette": ["#FF7043", "#42A5F5", "#66BB6A", "#FFEE58"],
+  "entities": [
+    {
+      "id": "player",
+      "kind": "player",
+      "shape": "circle",
+      "color": "#FF7043",
+      "position": { "x": 0.1, "y": 0.5 },
+      "sizeBox": { "w": 0.05, "h": 0.05 }
+    },
+    {
+      "id": "ground",
+      "kind": "platform",
+      "shape": "rect",
+      "color": "#66BB6A",
+      "position": { "x": 0.5, "y": 0.05 },
+      "sizeBox": { "w": 1.0, "h": 0.1 },
+      "properties": { "isStatic": true }
+    },
+    {
+      "id": "ledge_1",
+      "kind": "platform",
+      "shape": "roundedRect",
+      "color": "#66BB6A",
+      "position": { "x": 0.55, "y": 0.4 },
+      "sizeBox": { "w": 0.2, "h": 0.04 }
+    },
+    {
+      "id": "spike_1",
+      "kind": "hazard",
+      "shape": "triangle",
+      "color": "#42A5F5",
+      "position": { "x": 0.4, "y": 0.12 },
+      "sizeBox": { "w": 0.06, "h": 0.06 }
+    },
+    {
+      "id": "coin_1",
+      "kind": "coin",
+      "shape": "symbol",
+      "symbolName": "star.fill",
+      "color": "#FFEE58",
+      "position": { "x": 0.55, "y": 0.5 }
+    },
+    {
+      "id": "goal_flag",
+      "kind": "goal",
+      "shape": "rect",
+      "color": "#42A5F5",
+      "position": { "x": 0.92, "y": 0.2 },
+      "sizeBox": { "w": 0.04, "h": 0.2 }
+    }
+  ],
+  "goal": { "type": "reachGoal" },
+  "tuning": {
+    "gravity": -9.8,
+    "jumpImpulse": 90,
+    "moveSpeed": 220
+  }
+}

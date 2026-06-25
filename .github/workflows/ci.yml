@@ -44,3 +44,8 @@ jobs:
           .agents/skills/swift-ios-game-studio/scripts/scaffold-game-module.py \
             --name CiSmoke --type memory-cards --dest "$RUNNER_TEMP/scaffold-test"
           test -f "$RUNNER_TEMP/scaffold-test/CiSmoke/Models/CiSmokeModel.swift"
+
+      - name: Validate sample level against schema
+        run: |
+          .agents/skills/swift-ios-game-studio/scripts/validate-levels.py \
+            .agents/skills/swift-ios-game-studio/assets/example-level.json
