@@ -65,8 +65,8 @@ public struct MemoryGame: Sendable {
     @discardableResult
     public mutating func choose(cardID id: Int) -> Bool {
         guard phase == .playing,
-              let chosen = cards.firstIndex(where: { $0.id == id }),
-              cards[chosen].state == .faceDown
+            let chosen = cards.firstIndex(where: { $0.id == id }),
+            cards[chosen].state == .faceDown
         else { return false }
 
         if let pending = indexOfFaceUpCard {

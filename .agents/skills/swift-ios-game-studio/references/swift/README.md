@@ -24,3 +24,7 @@ matches what you're writing; the SKILL.md workflow links here at the implement s
 8. **Deterministic where tested.** Inject a seeded RNG/clock so tests are reproducible.
 9. **Hot paths allocate nothing.** Pool objects; update HUD text only on change.
 10. **Every interactive control is accessible.** Label/value/trait; Dynamic Type; Reduce Motion.
+
+**Enforce it mechanically.** Format and lint with `swift-format` using the shipped config
+(`../../assets/swift-format.json`, drop in as `.swift-format`): `swift format format -i -r .`
+and gate with `swift format lint --strict -r .`. CI runs this on the repo's example and templates.

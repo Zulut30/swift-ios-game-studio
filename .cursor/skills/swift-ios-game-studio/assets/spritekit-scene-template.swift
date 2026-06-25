@@ -7,18 +7,18 @@
 //  Replace `GameModel` with your real model and adapt categories/nodes to your genre.
 //
 
+import GameplayKit  // optional; remove if unused
 import SpriteKit
-import GameplayKit // optional; remove if unused
 
 // MARK: - Physics categories (adapt per game)
 
 enum PhysicsCategory {
-    static let none: UInt32   = 0
+    static let none: UInt32 = 0
     static let player: UInt32 = 1 << 0
     static let ground: UInt32 = 1 << 1
     static let hazard: UInt32 = 1 << 2
-    static let goal: UInt32   = 1 << 3
-    static let coin: UInt32   = 1 << 4
+    static let goal: UInt32 = 1 << 3
+    static let coin: UInt32 = 1 << 4
 }
 
 // MARK: - Scene
@@ -32,7 +32,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
     private var model = GameModel()
 
     private var lastUpdate: TimeInterval = 0
-    private let player = SKShapeNode(circleOfRadius: 22) // placeholder vector art
+    private let player = SKShapeNode(circleOfRadius: 22)  // placeholder vector art
 
     // MARK: Lifecycle
 
@@ -91,7 +91,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         if lastUpdate == 0 { lastUpdate = currentTime }
         var dt = currentTime - lastUpdate
         lastUpdate = currentTime
-        dt = min(dt, 1.0 / 30.0) // clamp to survive stalls
+        dt = min(dt, 1.0 / 30.0)  // clamp to survive stalls
 
         model.advance(by: dt)
 
@@ -100,7 +100,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         controller?.state = model.state
 
         if model.state == .won || model.state == .lost {
-            isPaused = false // let win/lose UI handle transition; pause if you prefer
+            isPaused = false  // let win/lose UI handle transition; pause if you prefer
         }
     }
 
@@ -142,7 +142,7 @@ struct GameModel {
     mutating func handleEvent(_ event: Event) {
         switch event {
         case .reachedGoal: state = .won
-        case .hitHazard:   state = .lost
+        case .hitHazard: state = .lost
         case .collectedCoin: score += 1
         }
     }

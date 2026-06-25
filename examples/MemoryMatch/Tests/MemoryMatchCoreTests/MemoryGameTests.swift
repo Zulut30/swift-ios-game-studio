@@ -6,6 +6,7 @@
 //  Run: `swift test` from examples/MemoryMatch.
 //
 import Testing
+
 @testable import MemoryMatchCore
 
 // MARK: - Helpers
@@ -14,8 +15,10 @@ private extension MemoryGame {
     /// Two face-down card ids that share a symbol (a matching pair).
     func aMatchingPair() -> (Int, Int)? {
         for i in cards.indices where cards[i].state == .faceDown {
-            for j in cards.indices where j != i && cards[j].state == .faceDown
-                && cards[j].symbol == cards[i].symbol {
+            for j in cards.indices
+            where j != i && cards[j].state == .faceDown
+                && cards[j].symbol == cards[i].symbol
+            {
                 return (cards[i].id, cards[j].id)
             }
         }
@@ -25,7 +28,9 @@ private extension MemoryGame {
     /// Two face-down card ids with different symbols (a guaranteed mismatch).
     func aMismatchedPair() -> (Int, Int)? {
         guard let first = cards.first(where: { $0.state == .faceDown }) else { return nil }
-        guard let other = cards.first(where: { $0.state == .faceDown && $0.symbol != first.symbol }) else { return nil }
+        guard let other = cards.first(where: { $0.state == .faceDown && $0.symbol != first.symbol }) else {
+            return nil
+        }
         return (first.id, other.id)
     }
 
@@ -75,7 +80,7 @@ private extension MemoryGame {
     let accepted = game.choose(cardID: id)
     #expect(accepted)
     #expect(game.cards.first { $0.id == id }?.state == .faceUp)
-    #expect(game.moves == 0) // moves count completed turns (the second card), not the first flip
+    #expect(game.moves == 0)  // moves count completed turns (the second card), not the first flip
     #expect(game.cards.filter { $0.state == .faceUp }.count == 1)
 }
 
@@ -85,7 +90,7 @@ private extension MemoryGame {
     let first = game.choose(cardID: id)
     let second = game.choose(cardID: id)
     #expect(first)
-    #expect(second == false) // already face up
+    #expect(second == false)  // already face up
 }
 
 @Test func matchingPairBecomesMatched() throws {

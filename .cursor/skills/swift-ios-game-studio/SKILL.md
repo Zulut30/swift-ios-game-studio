@@ -129,6 +129,9 @@ If the user is vague, build a small polished MVP and document every assumption:
   privacy-first apps (adjust honestly to what the app actually does).
 - `assets/example-level.json` — a valid sample level conforming to `level-schema-template.json`;
   use as a starting point and a validation fixture.
+- `assets/swift-format.json` — recommended `swift-format` config (4-space, line length 110) that
+  matches the Swift quality bar; drop it into a project as `.swift-format` and enforce with
+  `swift format lint --strict`.
 
 ## Scripts
 - `scripts/sync-skill.sh` — mirror this canonical skill into `.claude/` and `.cursor/`

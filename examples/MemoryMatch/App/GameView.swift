@@ -65,8 +65,11 @@ struct GameView: View {
     }
 
     private func choose(_ card: Card) {
-        if reduceMotion { controller.choose(card) }
-        else { withAnimation(.snappy) { controller.choose(card) } }
+        if reduceMotion {
+            controller.choose(card)
+        } else {
+            withAnimation(.snappy) { controller.choose(card) }
+        }
     }
 }
 

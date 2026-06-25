@@ -31,6 +31,15 @@ jobs:
       - name: Structural quality gate (frontmatter, sync, JSON, plist, globs)
         run: .agents/skills/swift-ios-game-studio/scripts/validate-skill.sh
 
+      - name: Swift format lint (enforce the Swift quality bar)
+        run: |
+          swift format lint --strict --parallel --recursive \
+            --configuration .swift-format \
+            examples/MemoryMatch/Sources \
+            examples/MemoryMatch/Tests \
+            examples/MemoryMatch/App \
+            .agents/skills/swift-ios-game-studio/assets
+
       - name: Build the example game core
         working-directory: examples/MemoryMatch
         run: swift build

@@ -64,6 +64,7 @@ Regenerate tool copies with `.agents/agents/sync-agents.py`. See
 - **Run the full quality gate** (also enforced in CI on every push/PR):
   ```bash
   .agents/skills/swift-ios-game-studio/scripts/validate-skill.sh   # frontmatter, sync, JSON, plist, globs
+  swift format lint --strict -r examples/MemoryMatch .agents/skills/swift-ios-game-studio/assets
   ```
 - **Scaffold a new game module:**
   ```bash

@@ -43,8 +43,8 @@ struct CardView: View {
     private var accessibilityValue: String {
         switch card.state {
         case .faceDown: return "face down"
-        case .faceUp:   return "showing \(card.symbol)"
-        case .matched:  return "matched, \(card.symbol)"
+        case .faceUp: return "showing \(card.symbol)"
+        case .matched: return "matched, \(card.symbol)"
         }
     }
 }

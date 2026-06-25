@@ -8,6 +8,7 @@
 //
 
 import SwiftUI
+
 // import SpriteKit  // uncomment for the hybrid SpriteView path
 
 // MARK: - Observable controller (single source of truth for the view layer)
@@ -65,9 +66,11 @@ private struct MenuView: View {
     var body: some View {
         VStack(spacing: 24) {
             Text("Game Title").font(.largeTitle.bold())
-            Button(action: onPlay) { Text("Play").font(.title2).padding(.horizontal, 40).padding(.vertical, 12) }
-                .buttonStyle(.borderedProminent)
-                .accessibilityLabel("Play")
+            Button(action: onPlay) {
+                Text("Play").font(.title2).padding(.horizontal, 40).padding(.vertical, 12)
+            }
+            .buttonStyle(.borderedProminent)
+            .accessibilityLabel("Play")
         }
         .padding()
     }
