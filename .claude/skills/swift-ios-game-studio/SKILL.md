@@ -115,9 +115,13 @@ If the user is vague, build a small polished MVP and document every assumption:
 - `references/swift/swift-memory-performance.md` — ARC, retain cycles, COW, pooling, profiling.
 - `references/swift/swift-patterns-idioms.md` — result builders, property wrappers, KeyPaths, RNG.
 
-## Worked example
-- `examples/MemoryMatch/` — a complete, buildable & tested reference game: a pure Swift Package
-  core (`swift test` green) plus SwiftUI UI files. Copy its architecture for new games.
+## Worked examples
+- `examples/MemoryMatch/` — **SwiftUI-only** path: a complete, buildable & tested memory game —
+  a pure Swift Package core (`swift test` green) plus SwiftUI UI files.
+- `examples/SkyHopper/` — **SpriteKit + SwiftUI hybrid** path: a lite endless runner whose pure
+  core owns the whole simulation (gravity, spawn, collision, scoring; deterministic, 10 tests),
+  with a thin `SKScene` renderer (pooled nodes, clamped `dt`) hosted in a SwiftUI shell via
+  `SpriteView`. Copy the matching example for your mode.
 
 ## Assets (copy & adapt)
 - `assets/gdd-template.md`, `assets/level-schema-template.json`,

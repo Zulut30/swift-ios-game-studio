@@ -21,7 +21,8 @@ memory/matching card games, lite endless runners, tap-reaction, and educational 
 ├─ .claude/skills/…  .claude/agents/       ← mirrors for Claude Code   (synced)
 ├─ .cursor/skills/…  .cursor/rules/agents/ ← mirrors for Cursor        (synced)
 ├─ .cursor/rules/                          ← Cursor .mdc rules (broad / architecture / testing)
-├─ examples/MemoryMatch/                   ← complete, buildable & TESTED reference game
+├─ examples/MemoryMatch/                   ← SwiftUI-only reference game (buildable & TESTED)
+├─ examples/SkyHopper/                     ← SpriteKit+SwiftUI hybrid reference game (buildable & TESTED)
 ├─ docs/ai-game-dev/                       ← example prompts, eval prompts, troubleshooting
 ├─ AGENTS.md                               ← Codex entry point
 └─ CLAUDE.md                               ← Claude Code entry point

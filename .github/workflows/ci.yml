@@ -38,15 +38,20 @@ jobs:
             examples/MemoryMatch/Sources \
             examples/MemoryMatch/Tests \
             examples/MemoryMatch/App \
+            examples/SkyHopper/Sources \
+            examples/SkyHopper/Tests \
+            examples/SkyHopper/App \
             .agents/skills/swift-ios-game-studio/assets
 
-      - name: Build the example game core
-        working-directory: examples/MemoryMatch
-        run: swift build
+      - name: Build the example game cores
+        run: |
+          swift build --package-path examples/MemoryMatch
+          swift build --package-path examples/SkyHopper
 
-      - name: Test the example game core
-        working-directory: examples/MemoryMatch
-        run: swift test
+      - name: Test the example game cores
+        run: |
+          swift test --package-path examples/MemoryMatch
+          swift test --package-path examples/SkyHopper
 
       - name: Scaffold smoke test (non-destructive)
         run: |
@@ -59,9 +64,10 @@ jobs:
           .agents/skills/swift-ios-game-studio/scripts/validate-levels.py \
             .agents/skills/swift-ios-game-studio/assets/example-level.json
 
-      - name: swift-doctor health check (example game must be healthy)
+      - name: swift-doctor health check (example games must be healthy)
         run: |
-          # The clean reference game must pass with no error-severity failures (exit 0).
+          # The clean reference games must pass with no error-severity failures (exit 0).
           .agents/skills/swift-ios-game-studio/scripts/swift-doctor.py examples/MemoryMatch
-          # Smoke-test JSON output and a non-project dir (must exit non-zero, not crash).
-          .agents/skills/swift-ios-game-studio/scripts/swift-doctor.py examples/MemoryMatch --json >/dev/null
+          .agents/skills/swift-ios-game-studio/scripts/swift-doctor.py examples/SkyHopper
+          # Smoke-test JSON output (must be valid, not crash).
+          .agents/skills/swift-ios-game-studio/scripts/swift-doctor.py examples/SkyHopper --json >/dev/null
