@@ -15,7 +15,7 @@ tests → build/test → review (child safety, privacy, a11y, performance) → h
 Deep-dive references live in `.agents/skills/swift-ios-game-studio/references/`,
 copy-and-adapt templates in `assets/`, and helper scripts in `scripts/`.
 
-## Subagents (12 specialist roles)
+## Subagents (14 specialist roles)
 For larger game work, play the specialist roles defined in `.agents/agents/` (canonical specs).
 When asked to "act as the <role> agent", read that file and adopt its responsibilities and output
 format.
@@ -25,17 +25,20 @@ format.
 2. `game-designer` — mechanics, core loop, progression, economy concept, Mini-GDD.
 3. `engine-architect` — mode (SwiftUI/SpriteKit/hybrid), architecture, perf budget, seams.
 4. `gameplay-programmer` — implement systems, abilities, interaction logic, UI flow.
-5. `narrative-writer` — quests, copy, lore, tutorial flow, localized strings (parallel).
-6. `balance-economist` — difficulty/progression curves, economy, win-rate/tempo (parallel).
-7. `qa-tester` — test cases, unit tests, edge cases, accessibility, runs build/tests.
+5. `art-director` — original game art: vector/procedural 2D, sprites/atlases, light 3D, palettes (parallel).
+6. `narrative-writer` — quests, copy, lore, tutorial flow, localized strings (parallel).
+7. `balance-economist` — difficulty/progression curves, economy, win-rate/tempo (parallel).
+8. `qa-tester` — test cases, unit tests, edge cases, accessibility, runs build/tests.
 
-**Review & audit roles** (read-only — report findings, route fixes back to build roles)
-8. `code-reviewer` — reviews a single diff/PR: bugs, style, architecture vs the skill + Swift bar.
-9. `code-auditor` — sweeps the whole codebase: systemic correctness, consistency, dead code, coverage.
-10. `security-auditor` — data leaks, insecure storage/network, secrets, permissions, kids-privacy.
-11. `performance-auditor` — frame budget, allocations, draw calls, memory, battery; profiling plan.
-12. `legal-compliance` — App Store guidelines, COPPA/GDPR-K, Kids Category, licensing, IP
+**Review, audit & release roles** (audits are read-only — report findings, route fixes back)
+9. `code-reviewer` — reviews a single diff/PR: bugs, style, architecture vs the skill + Swift bar.
+10. `code-auditor` — sweeps the whole codebase: systemic correctness, consistency, dead code, coverage.
+11. `security-auditor` — data leaks, insecure storage/network, secrets, permissions, kids-privacy.
+12. `performance-auditor` — frame budget, allocations, draw calls, memory, battery; profiling plan.
+13. `legal-compliance` — App Store guidelines, COPPA/GDPR-K, Kids Category, licensing, IP
     (checklists & risks, not legal advice).
+14. `release-engineer` — submission readiness: icons, Info.plist, archive/export, App Store
+    Connect, privacy labels, TestFlight (no approval guarantee).
 
 Every role enforces the same contract: no copyrighted assets, testable UI-free logic core,
 accessibility, kids safety/privacy, the Swift quality bar, and no compliance guarantees.

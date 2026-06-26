@@ -13,14 +13,16 @@ The skill covers simple 2D games: coloring, jigsaw/sliding puzzles, light platfo
 drag-and-drop, memory/matching, lite endless runners, tap-reaction, and educational mini-games.
 Read its SKILL.md and follow the execution workflow before writing code.
 
-## Subagents (12 specialist roles)
-Twelve project subagents live in `.claude/agents/` (generated from canonical specs in
+## Subagents (14 specialist roles)
+Fourteen project subagents live in `.claude/agents/` (generated from canonical specs in
 `.agents/agents/`). Invoke one with `@<name>` or just describe the need and let Claude route by
 each agent's `description`.
 - **Build:** `game-coordinator` (PM/decompose) → `game-designer` → `engine-architect` →
-  `gameplay-programmer` (+ `narrative-writer`, `balance-economist` in parallel) → `qa-tester`.
+  `gameplay-programmer` (+ `art-director`, `narrative-writer`, `balance-economist` in parallel) → `qa-tester`.
 - **Review & audit (read-only):** `code-reviewer` (diff/PR), and the pre-release gate —
   `code-auditor` (whole codebase), `security-auditor`, `performance-auditor`, `legal-compliance`.
+- **Release:** `release-engineer` — App Store submission readiness (icons, Info.plist,
+  archive/export, App Store Connect, privacy labels, TestFlight).
 
 Subagents can't spawn each other, so `game-coordinator` returns a delegation plan for the main
 thread to execute step by step. See `.agents/agents/README.md`.

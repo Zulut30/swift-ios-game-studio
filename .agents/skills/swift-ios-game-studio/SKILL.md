@@ -104,6 +104,10 @@ If the user is vague, build a small polished MVP and document every assumption:
   ECS, agents/pathfinding; GameKit (Game Center) with kids-safety caveats.
 - `references/haptics-and-guided-access.md` — tactile feedback (UIFeedbackGenerator / Core
   Haptics) and Guided Access (device lock-in for kids).
+- `references/apple-accounts-pay-and-data.md` — Sign in with Apple, Apple Pay vs StoreKit IAP, and
+  what data you may legally collect — with the audience gate (kids vs 13+) and COPPA/GDPR-K caveats.
+- `references/art-and-graphics-pipeline.md` — original game art: vector/procedural 2D, sprites &
+  atlases, light 3D/USDZ, palettes & accessible color, licensing (the `art-director` agent's playbook).
 
 ### Swift mastery (write excellent Swift) — `references/swift/`
 - `references/swift/README.md` — index + the 10-point Swift quality bar (start here).
@@ -136,6 +140,8 @@ If the user is vague, build a small polished MVP and document every assumption:
 - `assets/swift-format.json` — recommended `swift-format` config (4-space, line length 110) that
   matches the Swift quality bar; drop it into a project as `.swift-format` and enforce with
   `swift format lint --strict`.
+- `assets/apple-signin-iap-template.swift` — optional, general-audience (13+) starter for Sign in
+  with Apple + StoreKit 2 (Keychain-backed, async/await). NOT for kids/Kids-Category flows.
 
 ## Scripts
 - `scripts/sync-skill.sh` — mirror this canonical skill into `.claude/` and `.cursor/`

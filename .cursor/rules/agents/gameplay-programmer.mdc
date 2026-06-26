@@ -47,3 +47,60 @@ generics, memory, idioms, API design).
 - Keep core logic testable outside SwiftUI/SpriteKit.
 - Minimal dependencies; Apple frameworks preferred.
 - Kids flow: no tracking/analytics/ads/external-links/accounts; offline-first; no personal data.
+
+## Swift craft (implementation patterns)
+
+Operational craft for turning the architect's plan into Swift 6 / strict-concurrency code. This
+complements the bar in `references/swift/README.md` — wire these patterns in by default; the deep
+refs below carry the full rationale.
+
+**One owner, value-typed core.** The model is `struct`s the controller *holds*, not a class graph.
+The `@MainActor @Observable final class GameController` owns a `private(set) var board: Board`
+(value type) and mutates it through intent methods. State is one enum, never parallel booleans —
+`enum Phase { case menu, playing, paused, won(score: Int), lost }`. Push transitions through a pure
+`reduce(_:_:)` / `next(_:_:)` so the class is a thin shell over tested logic
+(`swift-patterns-idioms.md`, `swift-api-design.md`).
+
+**Mutate in place to keep COW free.** Editing a value in an array via a *copy* triggers a real copy
+and silently drops the write; index in.
+```swift
+// DON'T: var c = cards[i]; c.flip()          // mutates a throwaway copy, write is lost
+// DO:
+cards[i].flip()                                // in-place, COW-safe, persists
+for i in cards.indices where !cards[i].isMatched { cards[i].dim() }
+```
+
+**Loading is structured and cancellable; results land on `@MainActor`.** Heavy decode runs
+`nonisolated`/`static` off-actor; assignment hops back on. Store the `Task` and cancel it on
+teardown / level switch so a half-loaded level can't leak (`swift-concurrency.md`).
+```swift
+loadTask?.cancel()
+loadTask = Task { [weak self] in
+    let level = await Self.decode(id)          // off-actor, Sendable in/out
+    guard !Task.isCancelled else { return }
+    self?.apply(level)                         // back on MainActor
+}
+```
+Use `async let` / `TaskGroup` for parallel asset loads; never `DispatchQueue`, never `@unchecked Sendable`.
+
+**Seams are protocols, injected at `init`.** `Clock`, `RandomNumberGenerator`, `Persisting` are
+constructor parameters with live defaults; tests pass a `FixedClock` / `SeededGenerator` / in-memory
+store. Thread *one* `var rng` through `shuffle(using:)` / `random(in:using:)` — a fresh generator
+per call is non-deterministic (`swift-protocols-generics.md`, `swift-patterns-idioms.md`).
+
+**Hot path: no allocations, no per-frame strings.** The frame step takes `dt` and reuses buffers;
+HUD text updates only on change. Pool spawned objects with `Pool<T>`; prefer `some`/concrete over
+`any` in the loop (`swift-memory-performance.md`).
+```swift
+// DON'T: scoreLabel.text = "\(score)"                    // formats a string every frame
+// DO:    if score != shownScore { shownScore = score; scoreLabel.text = "\(score)" }
+```
+
+**Codable saves carry a `schemaVersion` and migrate forward.** `decodeIfPresent(...) ?? default`
+tolerates old/missing keys; on load, if `schemaVersion < current`, transform then bump — migrate
+incrementally (v1→v2→v3), never branch on every field. Decode levels once and cache; bad data
+`throws` a domain error, never force-unwraps (`swift-patterns-idioms.md`, `swift-language-essentials.md`).
+
+**Break cycles at the capture.** Every escaping `SKAction.run`, `Task`, and timer body that touches
+`self` uses `[weak self]` (then `guard let self`); delegates are `weak var`. The render loop stays
+`update(_:)` / `TimelineView(.animation)` — never an async `Task` (`swift-memory-performance.md`).

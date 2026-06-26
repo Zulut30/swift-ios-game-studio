@@ -29,12 +29,13 @@ memory/matching card games, lite endless runners, tap-reaction, and educational 
 ```
 
 ## Specialist subagents
-Twelve roles collaborate on larger games (canonical in `.agents/agents/`, mirrored to
+Fourteen roles collaborate on larger games (canonical in `.agents/agents/`, mirrored to
 `.claude/agents/` and `.cursor/rules/agents/`):
 - **Build:** `game-coordinator` → `game-designer` → `engine-architect` → `gameplay-programmer`
-  (+ `narrative-writer`, `balance-economist`) → `qa-tester`.
+  (+ `art-director`, `narrative-writer`, `balance-economist`) → `qa-tester`.
 - **Review & audit (read-only):** `code-reviewer` (diff/PR) + the pre-release gate —
   `code-auditor` (whole codebase), `security-auditor`, `performance-auditor`, `legal-compliance`.
+- **Release:** `release-engineer` — App Store submission readiness.
 
 Regenerate tool copies with `.agents/agents/sync-agents.py`. See
 [`.agents/agents/README.md`](.agents/agents/README.md).

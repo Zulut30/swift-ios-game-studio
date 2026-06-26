@@ -1694,6 +1694,61 @@ def check_kids_privacy_tracking_false(ctx):
     return CheckResult(cid, dim, sev, "PASS", title, [], "")
 
 
+def check_kids_sign_in_with_apple(ctx):
+    cid, dim, sev = "kids-sign-in-with-apple", "kids-safety", "info"
+    title = "Sign in with Apple / accounts"
+    pattern = (
+        r"\bimport\s+AuthenticationServices\b|\bSignInWithAppleButton\b"
+        r"|\bASAuthorizationAppleIDProvider\b"
+    )
+    findings = grep_files(ctx, ctx.swift_files, pattern, flags=re.MULTILINE, strip_comments=True)
+    if not findings:
+        return CheckResult(cid, dim, sev, "PASS", title + " (none)", [], "")
+    return CheckResult(
+        cid, dim, sev, "INFO", title, findings,
+        "Accounts are for general (13+) builds — not the Kids Category / under-13 flow. Keep any "
+        "sign-in out of the child-facing surface (behind a parental gate), request minimal scopes, "
+        "verify server-side, and keep the privacy manifest + App Privacy label accurate. "
+        "If you offer any other third-party login you MUST also offer Sign in with Apple (4.8). "
+        "See references/apple-accounts-pay-and-data.md.",
+    )
+
+
+def check_kids_apple_pay(ctx):
+    cid, dim, sev = "kids-apple-pay", "kids-safety", "info"
+    title = "Apple Pay (PassKit)"
+    pattern = r"\bimport\s+PassKit\b|\bPKPaymentAuthorizationController\b|\bPKPaymentRequest\b"
+    findings = grep_files(ctx, ctx.swift_files, pattern, flags=re.MULTILINE, strip_comments=True)
+    if not findings:
+        return CheckResult(cid, dim, sev, "PASS", title + " (none)", [], "")
+    return CheckResult(
+        cid, dim, sev, "INFO", title, findings,
+        "Apple Pay (PassKit) is for PHYSICAL goods/services only — DIGITAL content must use StoreKit "
+        "in-app purchase instead. Uncommon in a simple game; keep it out of any kids flow. "
+        "See references/apple-accounts-pay-and-data.md.",
+    )
+
+
+def check_kids_storekit_iap(ctx):
+    cid, dim, sev = "kids-storekit-iap", "kids-safety", "warn"
+    title = "In-app purchases (StoreKit)"
+    pattern = (
+        r"\bimport\s+StoreKit\b|\bProduct\.products\b"
+        r"|\bTransaction\.(updates|currentEntitlements)\b"
+    )
+    findings = grep_files(ctx, ctx.swift_files, pattern, flags=re.MULTILINE, strip_comments=True)
+    if not findings:
+        return CheckResult(cid, dim, sev, "PASS", title + " (none)", [], "")
+    return CheckResult(
+        cid, dim, sev, "WARN", title, findings,
+        "Digital IAP correctly uses StoreKit, but in a kids / Kids-Category app, purchases and any "
+        "link to purchases must sit behind a parental gate and out of the child-facing flow (the "
+        "Kids Category heavily restricts commerce). Confirm a parental gate, a working Restore "
+        "Purchases, no purchase pressure/dark patterns, and an accurate privacy label. "
+        "See references/apple-accounts-pay-and-data.md.",
+    )
+
+
 def check_kids_sensitive_permission_strings(ctx):
     cid, dim, sev = "kids-sensitive-permission-strings", "kids-safety", "warn"
     title = "Sensitive permission usage strings"
@@ -2304,6 +2359,9 @@ CHECKS = [
     check_kids_no_hardcoded_secrets,
     check_kids_privacy_manifest_present,
     check_kids_privacy_tracking_false,
+    check_kids_sign_in_with_apple,
+    check_kids_apple_pay,
+    check_kids_storekit_iap,
     check_kids_sensitive_permission_strings,
     # accessibility
     check_a11y_controls_vs_labels_ratio,

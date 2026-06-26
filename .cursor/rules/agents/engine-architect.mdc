@@ -41,3 +41,55 @@ into a clean, testable, performant technical design. Domain skill: `swift-ios-ga
 - Minimal dependencies — Apple frameworks preferred; justify any third-party package.
 - Swift 6 strict-concurrency clean (main-actor UI/state, Sendable value types).
 - Design for both orientations and iPhone+iPad from the start.
+
+## Swift craft (architecture decisions)
+
+Operational rules for the *shape* of the code you design — the decisions that bind the
+implementer. These extend the quality bar in `references/swift/README.md`; cite the matching
+reference in your ADR.
+
+- **Module boundary = access control, not folders.** The core's public surface is a contract:
+  default everything to `internal`, promote to `public` only what the app/scene/tests must call, and
+  make types `final` unless subclassing is a designed seam. Per `swift-api-design.md`, expose
+  `let` / `private(set)` + computed reads + intent methods; never a `var` callers can corrupt.
+  ```swift
+  public struct Board: Sendable {            // value-typed, Sendable contract
+      public private(set) var tiles: [Tile]  // read-only outside; mutate via intents
+      public mutating func flip(cardAt id: Int) -> FlipResult { … }  // returns outcome, no sentinels
+  }
+  ```
+- **Components over class trees (ECS-lite).** Model entities as a struct of value-type components
+  plus a small `EntityID`, not an inheritance chain. Capabilities are small protocols (`Positioned`,
+  `Collidable`) composed onto structs (`swift-protocols-generics.md`). Reserve `class` for genuine
+  shared identity (the one controller); per-frame data is always `struct` / `enum`.
+  ```swift
+  // Don't: class Hazard: Entity { … }  ·  class MovingHazard: Hazard { … }
+  // Do:    struct Entity { let id: EntityID; var transform: Transform; var collider: Collider? }
+  ```
+- **Seams are protocols owned by the core, injected at `init`.** Define `Clock`,
+  `RandomNumberGenerator`, `Persisting`, `AudioPlaying` next to the model and inject concrete impls
+  from the app. One protocol *per real test seam* — don't abstract a single concrete type that has
+  no fake (`swift-protocols-generics.md`). Specify in the ADR which take `some Protocol` in hot
+  per-frame paths (static dispatch) vs `any` (only the heterogeneous entity list at setup).
+- **Isolation design, not annotation spraying.** Pick each type's isolation domain up front:
+  authoritative game state, the controller, scenes, and views are `@MainActor`; the pure model is
+  `Sendable` value types with **no** isolation (callable from anywhere). Reach for an `actor` only
+  for shared *non-UI* mutable state touched by multiple tasks (a texture/level cache) — most games
+  need zero actors (`swift-concurrency.md`).
+- **Concurrency lives at the edges.** The model and game loop are synchronous and main-actor; only
+  loading/decode/audio-prep is `async`. Design that boundary as: `nonisolated`/`static` pure work in
+  → `Sendable` value out → hop back to `@MainActor` to apply. The render loop is `update(_:)` /
+  `TimelineView(.animation)`, never a `Task` (`swift-concurrency.md`). If a `Sendable` error appears,
+  fix ownership — never `@unchecked`.
+- **Design for testability = a pure reducer at the center.** Keep transitions as
+  `next(state, event) -> state` and rules as pure functions over value types
+  (`swift-patterns-idioms.md`), so the whole game advances headless: fake clock, seeded RNG,
+  in-memory store — no simulator, no sleeps. If a unit needs UIKit/SpriteKit to test, the seam is
+  in the wrong layer; move the logic down.
+- **SPM core vs app target.** Put `Models/` + `Systems/` in a Swift Package (`swift test` runs on
+  the host — fast, CI-friendly, like `examples/MemoryMatch/`) **whenever** the core is non-trivial or
+  shared across targets. The package imports no UI framework; the app target depends on it. A single
+  tiny SwiftUI-only game can stay one target — say which and why in the ADR.
+
+Add to the ADR a short **module map**: each module's one responsibility, its `public` surface, the
+seam protocols it owns, and its isolation domain (`@MainActor` / `Sendable` / `actor`).
