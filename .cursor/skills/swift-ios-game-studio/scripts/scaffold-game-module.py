@@ -40,13 +40,33 @@ SUPPORTED_TYPES = [
 # Types that need continuous motion/physics -> SpriteKit (hybrid). Others -> SwiftUI-only.
 SPRITEKIT_TYPES = {"simple-platformer", "endless-runner-lite"}
 
-SUBDIRS = ["App", "Models", "Systems", "Scenes", "Views", "Resources/Levels", "Tests"]
+# App/Views/Scenes hold the (Xcode-target) UI layer; the pure core is an SPM package so
+# `swift test` runs on the scaffolded module immediately — mirroring examples/MemoryMatch.
+STATIC_SUBDIRS = ["App", "Resources/Levels"]
+
+
+def package_stub(name: str) -> str:
+    return f"""// swift-tools-version: 6.0
+import PackageDescription
+
+let package = Package(
+    name: "{name}",
+    platforms: [.iOS(.v17), .macOS(.v14)],
+    products: [
+        .library(name: "{name}Core", targets: ["{name}Core"])
+    ],
+    targets: [
+        .target(name: "{name}Core"),
+        .testTarget(name: "{name}CoreTests", dependencies: ["{name}Core"]),
+    ]
+)
+"""
 
 
 def model_stub(name: str, gtype: str) -> str:
     return f"""//
 //  {name}Model.swift
-//  Pure, testable game logic for the {gtype} game. No SwiftUI/SpriteKit imports here.
+//  {name}Core — pure, testable game logic for the {gtype} game. No SwiftUI/SpriteKit imports.
 //
 
 import Foundation
@@ -78,7 +98,8 @@ def tests_stub(name: str) -> str:
 //
 
 import Testing
-@testable import {name}
+
+@testable import {name}Core
 
 @Test func startsInPlayingWithZeroScore() {{
     var model = {name}Model()
@@ -95,20 +116,26 @@ def readme_stub(name: str, gtype: str, mode: str) -> str:
 Scaffolded {gtype} game module.
 
 - **Implementation mode:** {mode}
-- **Source of truth:** `Models/{name}Model.swift` (pure Swift, unit-tested).
+- **Source of truth:** `Sources/{name}Core/{name}Model.swift` (pure Swift, unit-tested).
 
-## Folders
-- `App/` — @main App, root view, app config.
-- `Models/` — pure rules/state (no SwiftUI/SpriteKit).
-- `Systems/` — input, score, spawn, collision, audio, save.
-- `Scenes/` — SKScene subclasses (SpriteKit/hybrid only).
-- `Views/` — SwiftUI views: menu, HUD, settings, game container.
+## Build & test the core (runs anywhere — no Xcode needed)
+```bash
+cd {name}
+swift build
+swift test
+```
+
+## Layout
+- `Package.swift` — builds the pure `{name}Core` library + its tests.
+- `Sources/{name}Core/` — pure rules/state (no SwiftUI/SpriteKit). The single source of truth.
+- `Tests/{name}CoreTests/` — unit tests for the core (`@testable import {name}Core`).
+- `App/` — the iOS UI layer (@main App, views, scenes). Add these to an Xcode app target that
+  links `{name}Core` — same pattern as `examples/MemoryMatch/`. SwiftPM does not compile `App/`.
 - `Resources/Levels/` — level JSON (see the skill's level-schema-template.json).
-- `Tests/` — unit tests for Models + Systems.
 
 ## Next steps
-1. Flesh out `{name}Model` with the {gtype} rules (legal moves, scoring, win/lose).
-2. Add the view/scene from the skill's assets templates.
+1. Flesh out `{name}Model` (and split into Systems/) with the {gtype} rules (moves, scoring, win/lose).
+2. Add the view/scene from the skill's assets templates into `App/`.
 3. Add level data; wire persistence for progress/settings only.
 4. Run the review checklist (child safety, privacy, a11y, performance).
 
@@ -154,14 +181,17 @@ def main(argv: list[str]) -> int:
 
     created: list[str] = []
     skipped: list[str] = []
+    core = f"{name}Core"
 
     # Folders (mkdir is inherently non-destructive).
-    for sub in SUBDIRS:
+    subdirs = STATIC_SUBDIRS + [f"Sources/{core}", f"Tests/{core}Tests"]
+    for sub in subdirs:
         (root / sub).mkdir(parents=True, exist_ok=True)
 
-    # Starter files (never overwritten).
-    create_file(root / "Models" / f"{name}Model.swift", model_stub(name, gtype), created, skipped)
-    create_file(root / "Tests" / f"{name}ModelTests.swift", tests_stub(name), created, skipped)
+    # Starter files (never overwritten). A real Package.swift so `swift test` works immediately.
+    create_file(root / "Package.swift", package_stub(name), created, skipped)
+    create_file(root / "Sources" / core / f"{name}Model.swift", model_stub(name, gtype), created, skipped)
+    create_file(root / "Tests" / f"{core}Tests" / f"{name}ModelTests.swift", tests_stub(name), created, skipped)
     create_file(root / "README.md", readme_stub(name, gtype, mode), created, skipped)
 
     print(f"Scaffolded '{name}' ({gtype}, {mode}) at: {root}")

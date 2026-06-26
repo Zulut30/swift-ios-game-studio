@@ -271,7 +271,7 @@ let wrong   = Token(color: .tomato, symbol: "xmark.circle.fill",     label: "Try
 flag any pair whose simulated hues collapse (classic red/green). Fix with **value or shape**
 separation, not a different hue.
 
-**Art-direction one-pager** (`assets/art-direction.md`) for humans + downstream agents:
+**Art-direction one-pager** (a project doc, e.g. `ArtDirection.md`) for humans + downstream agents:
 ```markdown
 # Art Direction — Forest Match (placeholder)
 Mood: friendly, calm, no-fail.   Harmony: analogous warm + 1 accent.

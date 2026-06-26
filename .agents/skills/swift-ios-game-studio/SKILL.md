@@ -108,6 +108,10 @@ If the user is vague, build a small polished MVP and document every assumption:
   what data you may legally collect — with the audience gate (kids vs 13+) and COPPA/GDPR-K caveats.
 - `references/art-and-graphics-pipeline.md` — original game art: vector/procedural 2D, sprites &
   atlases, light 3D/USDZ, palettes & accessible color, licensing (the `art-director` agent's playbook).
+- `references/swift-charts-for-games.md` — Swift Charts for stats/results screens (score history,
+  breakdowns) — value-typed stats in the model, charts in the view, NEVER in the per-frame loop.
+- `references/swiftdata-persistence.md` — SwiftData for save/progress at the edge (when to use it vs
+  Codable/UserDefaults), keeping `@Model` out of the pure core, migration, in-memory testing, kids-local.
 
 ### Swift mastery (write excellent Swift) — `references/swift/`
 - `references/swift/README.md` — index + the 10-point Swift quality bar (start here).
@@ -126,6 +130,9 @@ If the user is vague, build a small polished MVP and document every assumption:
   core owns the whole simulation (gravity, spawn, collision, scoring; deterministic, 10 tests),
   with a thin `SKScene` renderer (pooled nodes, clamped `dt`) hosted in a SwiftUI shell via
   `SpriteView`. Copy the matching example for your mode.
+- `examples/MemoryMatchMacDemo/` — a **runnable** macOS window over the same `MemoryMatchCore`:
+  `swift run --package-path examples/MemoryMatchMacDemo` opens a playable game with no Xcode project —
+  proof that a UI-free core drives iOS and macOS alike.
 
 ## Assets (copy & adapt)
 - `assets/gdd-template.md`, `assets/level-schema-template.json`,
@@ -142,6 +149,10 @@ If the user is vague, build a small polished MVP and document every assumption:
   `swift format lint --strict`.
 - `assets/apple-signin-iap-template.swift` — optional, general-audience (13+) starter for Sign in
   with Apple + StoreKit 2 (Keychain-backed, async/await). NOT for kids/Kids-Category flows.
+- `assets/stats-chart-template.swift` — a reusable Swift Charts score-history view (stats screen,
+  value-typed input, accessible) — not for the per-frame HUD.
+- `assets/swiftdata-save-template.swift` — a SwiftData starter: `@Model GameProgress`, an in-memory +
+  on-disk `ModelContainer` factory, and a thin `SaveStore` that maps to a value-type DTO (core stays pure).
 
 ## Scripts
 - `scripts/sync-skill.sh` — mirror this canonical skill into `.claude/` and `.cursor/`

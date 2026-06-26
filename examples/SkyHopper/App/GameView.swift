@@ -30,7 +30,8 @@ struct GameView: View {
 
             VStack {
                 Text("\(controller.score)")
-                    .font(.system(size: 56, weight: .heavy, design: .rounded))
+                    .font(.system(.largeTitle, design: .rounded).weight(.heavy))
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)  // scales, but capped for the HUD
                     .monospacedDigit()
                     .foregroundStyle(.white)
                     .shadow(radius: 4)

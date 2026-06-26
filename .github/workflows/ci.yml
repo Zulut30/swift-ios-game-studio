@@ -41,23 +41,26 @@ jobs:
             examples/SkyHopper/Sources \
             examples/SkyHopper/Tests \
             examples/SkyHopper/App \
+            examples/MemoryMatchMacDemo/Sources \
             .agents/skills/swift-ios-game-studio/assets
 
       - name: Build the example game cores
         run: |
           swift build --package-path examples/MemoryMatch
           swift build --package-path examples/SkyHopper
+          swift build --package-path examples/MemoryMatchMacDemo  # runnable macOS demo
 
       - name: Test the example game cores
         run: |
           swift test --package-path examples/MemoryMatch
           swift test --package-path examples/SkyHopper
 
-      - name: Scaffold smoke test (non-destructive)
+      - name: Scaffold smoke test (must produce a buildable, testable package)
         run: |
           .agents/skills/swift-ios-game-studio/scripts/scaffold-game-module.py \
             --name CiSmoke --type memory-cards --dest "$RUNNER_TEMP/scaffold-test"
-          test -f "$RUNNER_TEMP/scaffold-test/CiSmoke/Models/CiSmokeModel.swift"
+          swift build --package-path "$RUNNER_TEMP/scaffold-test/CiSmoke"
+          swift test --package-path "$RUNNER_TEMP/scaffold-test/CiSmoke"
 
       - name: Validate sample level against schema
         run: |

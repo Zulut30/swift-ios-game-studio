@@ -17,7 +17,7 @@ memory/matching card games, lite endless runners, tap-reaction, and educational 
 │  │  └─ swift/                            ← Swift language mastery (write excellent Swift)
 │  ├─ assets/                              ← templates: GDD, level schema, scenes, RNG, privacy
 │  └─ scripts/                             ← sync, verify-ios-project, scaffold-game-module
-├─ .agents/agents/                         ← CANONICAL subagents (8 specialist roles) + sync-agents.py
+├─ .agents/agents/                         ← CANONICAL subagents (14 specialist roles) + sync-agents.py
 ├─ .claude/skills/…  .claude/agents/       ← mirrors for Claude Code   (synced)
 ├─ .cursor/skills/…  .cursor/rules/agents/ ← mirrors for Cursor        (synced)
 ├─ .cursor/rules/                          ← Cursor .mdc rules (broad / architecture / testing)

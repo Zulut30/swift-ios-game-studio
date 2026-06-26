@@ -14,11 +14,11 @@ import SpriteKit
 import SkyHopperCore
 
 final class GameScene: SKScene {
-    unowned let controller: GameController
+    weak var controller: GameController?
     private let tuning = Tuning()
 
     private let player = SKShapeNode(circleOfRadius: Tuning().playerRadius)
-    private var barNodes: [Int: (top: SKSpriteNode, bottom: SKSpriteNode)] = [:]
+    private var barPool: [Int: (top: SKSpriteNode, bottom: SKSpriteNode)] = [:]
     private var lastUpdate: TimeInterval = 0
 
     init(size: CGSize, controller: GameController) {
@@ -49,12 +49,13 @@ final class GameScene: SKScene {
     // MARK: Input
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        controller.flap()
+        controller?.flap()
     }
 
     // MARK: Game loop — advance the model, then mirror it to nodes
 
     override func update(_ currentTime: TimeInterval) {
+        guard let controller else { return }
         if lastUpdate == 0 { lastUpdate = currentTime }
         var dt = currentTime - lastUpdate
         lastUpdate = currentTime
@@ -66,20 +67,20 @@ final class GameScene: SKScene {
     // MARK: Rendering
 
     private func syncNodes() {
-        let game = controller.game
+        guard let game = controller?.game else { return }
         player.position = CGPoint(x: tuning.playerX, y: game.playerY)
 
         var live = Set<Int>()
         for obstacle in game.obstacles {
             live.insert(obstacle.id)
-            let pair = barNodes[obstacle.id] ?? makeBarPair(for: obstacle.id)
+            let pair = barPool[obstacle.id] ?? makeBarPair(for: obstacle.id)
             layout(pair, for: obstacle)
         }
         // Recycle bars whose obstacle has scrolled away (pooling, no churn).
-        for (id, pair) in barNodes where !live.contains(id) {
+        for (id, pair) in barPool where !live.contains(id) {
             pair.top.removeFromParent()
             pair.bottom.removeFromParent()
-            barNodes[id] = nil
+            barPool[id] = nil
         }
     }
 
@@ -92,7 +93,7 @@ final class GameScene: SKScene {
             addChild(node)
         }
         let pair = (top: top, bottom: bottom)
-        barNodes[id] = pair
+        barPool[id] = pair
         return pair
     }
 

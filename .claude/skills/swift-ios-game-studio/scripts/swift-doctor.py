@@ -1335,7 +1335,8 @@ def check_perf_addchild_churn_no_pool(ctx):
     remove_re = re.compile(r"removeFromParent\s*\(\s*\)")
     add_re = re.compile(r"addChild\(")
     init_re = re.compile(r"SKSpriteNode\(|SKShapeNode\(")
-    pool_re = re.compile(r"(?i)\bpool\b|reuse|recycle|dequeue|freeList")
+    # Match pool-ish identifiers including camelCase (barPool, nodePool) and snake/camel free-list.
+    pool_re = re.compile(r"(?i)pool|reuse|recycle|dequeue|free_?list")
     sample = None
     for p in files:
         text = strip_comments_text(ctx.text(p))

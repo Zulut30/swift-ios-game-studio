@@ -11,7 +11,6 @@ import MemoryMatchCore
 struct GameView: View {
     @State private var controller = GameController(pairCount: 6)
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.scenePhase) private var scenePhase
 
     private let columns = [GridItem(.adaptive(minimum: 72, maximum: 140), spacing: 12)]
 
