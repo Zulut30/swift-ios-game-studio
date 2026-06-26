@@ -58,3 +58,10 @@ jobs:
         run: |
           .agents/skills/swift-ios-game-studio/scripts/validate-levels.py \
             .agents/skills/swift-ios-game-studio/assets/example-level.json
+
+      - name: swift-doctor health check (example game must be healthy)
+        run: |
+          # The clean reference game must pass with no error-severity failures (exit 0).
+          .agents/skills/swift-ios-game-studio/scripts/swift-doctor.py examples/MemoryMatch
+          # Smoke-test JSON output and a non-project dir (must exit non-zero, not crash).
+          .agents/skills/swift-ios-game-studio/scripts/swift-doctor.py examples/MemoryMatch --json >/dev/null

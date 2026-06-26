@@ -50,9 +50,9 @@ Run these steps in order. Skip a step only with a stated reason.
 7. **Run build/test when available.** If an Xcode project/workspace exists, use
    `scripts/verify-ios-project.sh` to discover schemes and run a safe `xcodebuild` build/test.
    If you cannot build (no project, no toolchain), say so explicitly — do not claim it passed.
-8. **Review.** Walk `assets/review-checklist.md`: child safety, privacy, accessibility,
-   and performance. See `references/accessibility-child-safety.md` and
-   `references/performance-checklist.md`.
+8. **Review.** Run `scripts/swift-doctor.py <project>` for an automated health report, then walk
+   `assets/review-checklist.md`: child safety, privacy, accessibility, and performance. See
+   `references/accessibility-child-safety.md` and `references/performance-checklist.md`.
 9. **Handoff.** Report: what you built, the chosen mode and why, **changed files**,
    **commands run with their real output**, assumptions, open risks, and next steps.
 
@@ -142,3 +142,8 @@ If the user is vague, build a small polished MVP and document every assumption:
   JSON/plist validity, script syntax, Cursor `globs` format). Run before committing skill changes.
 - `scripts/validate-levels.py` — validate level JSON files against `level-schema-template.json`
   (uses `jsonschema` if installed, else a dependency-free built-in validator).
+- `scripts/swift-doctor.py` — **project health-check CLI** (the `flutter doctor` analog). Run it on
+  a game project to get a categorized PASS/WARN/FAIL report across environment, architecture, Swift
+  quality, performance, kids-safety/privacy, accessibility, assets/licensing, and build/tests, with
+  remediation and an exit code: `swift-doctor.py [PATH] [--json] [--build] [--strict] [--only DIM]`.
+  Dependency-free; scans source/config only (never docs).

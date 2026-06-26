@@ -30,6 +30,9 @@ Inventory and audit all source, tests, assets, scripts, and config. Build a ment
    (`validate-skill.sh`), failing CI gates.
 
 ## How you work
+- **Start with `scripts/swift-doctor.py <project>`** — the automated health report (environment,
+  architecture, Swift quality, performance, kids-safety, accessibility, assets, build/tests). Use
+  its findings as your triage list, then dig deeper by hand where it flags risks or can't reach.
 - Map the repo, then read the important files in full. Run `swift build`/`swift test`,
   `scripts/validate-skill.sh`, and `scripts/verify-ios-project.sh` to ground claims in reality.
 - Be specific: cite `file:line`, explain impact, propose the fix — don't rewrite code yourself.

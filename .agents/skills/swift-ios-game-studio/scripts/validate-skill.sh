@@ -64,7 +64,11 @@ fi
 
 section "6. Script syntax"
 for s in .agents/skills/${SKILL_NAME}/scripts/*.sh; do bash -n "$s" 2>/dev/null && pass "bash -n $(basename "$s")" || err "$s: bash syntax error"; done
-python3 -m py_compile .agents/skills/${SKILL_NAME}/scripts/scaffold-game-module.py .agents/agents/sync-agents.py 2>/dev/null \
+python3 -m py_compile \
+  .agents/skills/${SKILL_NAME}/scripts/scaffold-game-module.py \
+  .agents/skills/${SKILL_NAME}/scripts/validate-levels.py \
+  .agents/skills/${SKILL_NAME}/scripts/swift-doctor.py \
+  .agents/agents/sync-agents.py 2>/dev/null \
   && pass "python compile" || err "python compile error"
 
 section "7. Cursor .mdc globs format (string, not YAML list)"
